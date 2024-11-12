@@ -1,0 +1,30 @@
+
+@startuml
+
+entity users {
+    id bigint (pk)
+    --
+    email varchar
+    username varchar
+    password varchar
+    created_at timestamp not null
+    updated_at timestamp not null
+    created_by text
+    updated_by text
+}
+
+entity track_activity {
+    id bigint (pk)
+    --
+    user_id bigint (fk)
+    spotify_id text
+    is_liked bool null
+    created_at timestamp not null
+    updated_at timestamp not null
+    created_by text
+    updated_by text
+}
+
+users||--o{track_activity
+
+@enduml

@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+    image: "postgres:latest"
+    container_name: local-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: fastcampus_db
+    volumes:
+      - /Users/teukufuadmaulana/setup/valumes:/var/lib/postgresql/data
