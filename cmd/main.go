@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/fuadvi/music-catalog/internal/configs"
+	"github.com/fuadvi/music-catalog/internal/models/memberships"
 	"github.com/fuadvi/music-catalog/pkg/internalsql"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -27,7 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Gagal inisiasi databases")
 	}
-
+	db.AutoMigrate(&memberships.User{})
 	r := gin.Default()
 	r.Run(cfg.Service.Port)
 }

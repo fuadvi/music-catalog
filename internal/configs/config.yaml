@@ -2,4 +2,4 @@ service:
   port: ":9879"
   secretJwt: "fastcampus"
 database:
-  dataSourceName: "postgres:://admin:root@localhost:5433/fastcampus_db?sslmode=disable"
+  dataSourceName: "postgres://admin:root@localhost:5432/fastcampus_db?sslmode=disable"
