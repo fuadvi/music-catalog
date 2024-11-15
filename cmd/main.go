@@ -2,13 +2,18 @@ package main
 
 import (
 	"github.com/fuadvi/music-catalog/internal/configs"
+	membershipHANDLER "github.com/fuadvi/music-catalog/internal/handler/memberships"
 	"github.com/fuadvi/music-catalog/internal/models/memberships"
+	membershipsRepo "github.com/fuadvi/music-catalog/internal/repository/memberships"
+	membershipSVC "github.com/fuadvi/music-catalog/internal/service/memberships"
 	"github.com/fuadvi/music-catalog/pkg/internalsql"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func main() {
+	r := gin.Default()
+
 	var (
 		cfg *configs.Config
 	)
@@ -29,6 +34,12 @@ func main() {
 		log.Fatal("Gagal inisiasi databases")
 	}
 	db.AutoMigrate(&memberships.User{})
-	r := gin.Default()
+
+	membershipRepo := membershipsRepo.NewRepository(db)
+	membershipSvc := membershipSVC.NewService(cfg, membershipRepo)
+	membershipHandler := membershipHANDLER.NewHandler(r, membershipSvc)
+
+	membershipHandler.RegisterRoute()
+
 	r.Run(cfg.Service.Port)
 }
