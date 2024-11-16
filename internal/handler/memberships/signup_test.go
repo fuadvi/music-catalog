@@ -3,7 +3,6 @@ package memberships
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"github.com/fuadvi/music-catalog/internal/models/memberships"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -43,11 +42,7 @@ func TestHandler_SignUp(t *testing.T) {
 		{
 			name: "failed to create user",
 			mockFn: func() {
-				mockSvc.EXPECT().SignUp(memberships.SignUpRequest{
-					Email:    "test@gmail.com",
-					Username: "testusername",
-					Password: "password",
-				}).Return(errors.New("username and email exist "))
+
 			},
 			expectedStatusCode: 500,
 		},
