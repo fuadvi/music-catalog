@@ -3,3 +3,7 @@ service:
   secretJwt: "fastcampus"
 database:
   dataSourceName: "postgres://admin:root@localhost:5432/fastcampus_db?sslmode=disable"
+
+spotify:
+  clientID: ""
+  clientSecret: ""

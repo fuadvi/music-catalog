@@ -3,12 +3,18 @@ package main
 import (
 	"github.com/fuadvi/music-catalog/internal/configs"
 	membershipHANDLER "github.com/fuadvi/music-catalog/internal/handler/memberships"
+	tracksHandler "github.com/fuadvi/music-catalog/internal/handler/tracks"
+
 	"github.com/fuadvi/music-catalog/internal/models/memberships"
 	membershipsRepo "github.com/fuadvi/music-catalog/internal/repository/memberships"
+	"github.com/fuadvi/music-catalog/internal/repository/spotify"
 	membershipSVC "github.com/fuadvi/music-catalog/internal/service/memberships"
+	"github.com/fuadvi/music-catalog/internal/service/tracks"
+	"github.com/fuadvi/music-catalog/pkg/httpclient"
 	"github.com/fuadvi/music-catalog/pkg/internalsql"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -35,11 +41,20 @@ func main() {
 	}
 	db.AutoMigrate(&memberships.User{})
 
-	membershipRepo := membershipsRepo.NewRepository(db)
-	membershipSvc := membershipSVC.NewService(cfg, membershipRepo)
-	membershipHandler := membershipHANDLER.NewHandler(r, membershipSvc)
+	httpClient := httpclient.NewClient(&http.Client{})
 
+	spotifyOutbound := spotify.NewSpotifyOutbound(cfg, httpClient)
+
+	membershipRepo := membershipsRepo.NewRepository(db)
+
+	membershipSvc := membershipSVC.NewService(cfg, membershipRepo)
+	spotifySvc := tracks.NewService(spotifyOutbound)
+
+	membershipHandler := membershipHANDLER.NewHandler(r, membershipSvc)
 	membershipHandler.RegisterRoute()
+
+	trackHandler := tracksHandler.NewHandler(r, spotifySvc)
+	trackHandler.RegisterRoute()
 
 	r.Run(cfg.Service.Port)
 }
