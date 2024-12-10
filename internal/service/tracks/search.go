@@ -9,7 +9,7 @@ import (
 
 func (s *Service) Search(ctx context.Context, query string, pageSize, pageIndex int) (*spotify.SearchResponse, error) {
 	limit := pageSize
-	offset := pageSize * (pageIndex - 1)
+	offset := (pageSize - 1) * pageIndex
 
 	trackDetail, err := s.spotifyOutbound.Search(ctx, query, limit, offset)
 	if err != nil {
@@ -39,7 +39,7 @@ func modelTOResponse(data *sporifyRepo.SpotifySearchResponse) *spotify.SearchRes
 		}
 
 		items = append(items, spotify.SpotifyTrackObjects{
-			AlbumType:        item.Album.Name,
+			AlbumType:        item.Album.AlbumType,
 			AlbumTotalTracks: item.Album.TotalTracks,
 			AlbumImages:      imageUrls,
 			AlbumName:        item.Album.Name,
