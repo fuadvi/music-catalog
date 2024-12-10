@@ -5,5 +5,5 @@ database:
   dataSourceName: "postgres://admin:root@localhost:5432/fastcampus_db?sslmode=disable"
 
 spotify:
-  clientID: ""
-  clientSecret: ""
+  clientID: "1a793fad7e8a43839b694b60eb68b939"
+  clientSecret: "0a2cfe2dcd9b4f3599b4cad24d05c6cb"

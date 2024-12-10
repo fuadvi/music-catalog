@@ -26,7 +26,7 @@ type SpotifyTracks struct {
 
 type SpotifyTrackObjects struct {
 	Album    SpotifyAlbumObjects   `json:"album"`
-	Artists  []SpotifyArtistObject `json:"artist"`
+	Artists  []SpotifyArtistObject `json:"artists"`
 	Explicit bool                  `json:"explicit"`
 	Href     string                `json:"href"`
 	ID       string                `json:"id"`
