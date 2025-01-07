@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func CreateToken(id int64, username, secretKey string) (string, error) {
+func CreateToken(id uint, username, secretKey string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       id,
 		"username": username,
@@ -21,7 +21,7 @@ func CreateToken(id int64, username, secretKey string) (string, error) {
 	return tokenString, nil
 }
 
-func ValidateToken(tokenStr, secretKey string) (int64, string, error) {
+func ValidateToken(tokenStr, secretKey string) (uint, string, error) {
 	key := []byte(secretKey)
 	claims := make(jwt.MapClaims)
 
@@ -37,10 +37,10 @@ func ValidateToken(tokenStr, secretKey string) (int64, string, error) {
 		return 0, "", err
 	}
 
-	return int64(claims["id"].(float64)), claims["username"].(string), nil
+	return uint(claims["id"].(float64)), claims["username"].(string), nil
 }
 
-func ValidateTokenWithoutExpiry(tokenStr, secretKey string) (int64, string, error) {
+func ValidateTokenWithoutExpiry(tokenStr, secretKey string) (uint, string, error) {
 	key := []byte(secretKey)
 	claims := make(jwt.MapClaims)
 
@@ -56,5 +56,5 @@ func ValidateTokenWithoutExpiry(tokenStr, secretKey string) (int64, string, erro
 		return 0, "", err
 	}
 
-	return int64(claims["id"].(float64)), claims["username"].(string), nil
+	return uint(claims["id"].(float64)), claims["username"].(string), nil
 }

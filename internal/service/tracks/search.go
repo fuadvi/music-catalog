@@ -3,11 +3,12 @@ package tracks
 import (
 	"context"
 	"github.com/fuadvi/music-catalog/internal/models/spotify"
+	"github.com/fuadvi/music-catalog/internal/models/trackactivities"
 	sporifyRepo "github.com/fuadvi/music-catalog/internal/repository/spotify"
 	"github.com/rs/zerolog/log"
 )
 
-func (s *Service) Search(ctx context.Context, query string, pageSize, pageIndex int) (*spotify.SearchResponse, error) {
+func (s *Service) Search(ctx context.Context, query string, pageSize, pageIndex int, userID uint) (*spotify.SearchResponse, error) {
 	limit := pageSize
 	offset := (pageSize - 1) * pageIndex
 
@@ -17,10 +18,22 @@ func (s *Service) Search(ctx context.Context, query string, pageSize, pageIndex 
 		return nil, err
 	}
 
-	return modelTOResponse(trackDetail), nil
+	trackIDs := make([]string, len(trackDetail.Tracks.Items))
+
+	for idx, track := range trackDetail.Tracks.Items {
+		trackIDs[idx] = track.ID
+	}
+
+	trackActivity, err := s.trackActivitiesRepo.GetBullSpotifyIDs(ctx, userID, trackIDs)
+	if err != nil {
+		log.Error().Err(err).Msg("error get tracks activity from database")
+		return nil, err
+	}
+
+	return modelTOResponse(trackDetail, trackActivity), nil
 }
 
-func modelTOResponse(data *sporifyRepo.SpotifySearchResponse) *spotify.SearchResponse {
+func modelTOResponse(data *sporifyRepo.SpotifySearchResponse, mapTrackActivity map[string]trackactivities.TrackActivity) *spotify.SearchResponse {
 	if data == nil {
 		return nil
 	}
@@ -47,6 +60,7 @@ func modelTOResponse(data *sporifyRepo.SpotifySearchResponse) *spotify.SearchRes
 			Explicit:         item.Explicit,
 			ID:               item.ID,
 			Name:             item.Name,
+			IsLiked:          mapTrackActivity[item.ID].Isliked,
 		})
 	}
 

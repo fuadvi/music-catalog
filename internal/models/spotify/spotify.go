@@ -17,4 +17,5 @@ type SpotifyTrackObjects struct {
 	Explicit    bool     `json:"explicit"`
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
+	IsLiked     *bool    `json:"isLiked"`
 }

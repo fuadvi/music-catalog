@@ -4,6 +4,8 @@ import (
 	"github.com/fuadvi/music-catalog/internal/configs"
 	membershipHANDLER "github.com/fuadvi/music-catalog/internal/handler/memberships"
 	tracksHandler "github.com/fuadvi/music-catalog/internal/handler/tracks"
+	"github.com/fuadvi/music-catalog/internal/models/trackactivities"
+	trackactivitiesRepo "github.com/fuadvi/music-catalog/internal/repository/trackactivities"
 
 	"github.com/fuadvi/music-catalog/internal/models/memberships"
 	membershipsRepo "github.com/fuadvi/music-catalog/internal/repository/memberships"
@@ -40,15 +42,17 @@ func main() {
 		log.Fatal("Gagal inisiasi databases")
 	}
 	db.AutoMigrate(&memberships.User{})
+	db.AutoMigrate(&trackactivities.TrackActivity{})
 
 	httpClient := httpclient.NewClient(&http.Client{})
 
 	spotifyOutbound := spotify.NewSpotifyOutbound(cfg, httpClient)
 
 	membershipRepo := membershipsRepo.NewRepository(db)
+	trackactivityRepo := trackactivitiesRepo.NewRepository(db)
 
 	membershipSvc := membershipSVC.NewService(cfg, membershipRepo)
-	spotifySvc := tracks.NewService(spotifyOutbound)
+	spotifySvc := tracks.NewService(spotifyOutbound, trackactivityRepo)
 
 	membershipHandler := membershipHANDLER.NewHandler(r, membershipSvc)
 	membershipHandler.RegisterRoute()

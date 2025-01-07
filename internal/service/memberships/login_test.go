@@ -6,6 +6,7 @@ import (
 	"github.com/fuadvi/music-catalog/internal/models/memberships"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -24,27 +25,27 @@ func TestService_Login(t *testing.T) {
 		wantErr bool
 		mockFn  func(args args)
 	}{
-		//{
-		//	name: "success",
-		//	args: args{
-		//		request: memberships.LoginRequest{
-		//			Email:    "test@gmail.com",
-		//			Password: "password",
-		//		},
-		//	},
-		//	wantErr: false,
-		//	mockFn: func(args args) {
-		//		mockRepo.EXPECT().GetUser(args.request.Email, "", uint(0)).
-		//			Return(&memberships.User{
-		//				Model: gorm.Model{
-		//					ID: 1,
-		//				},
-		//				Email:    "test@gmail.com",
-		//				Username: "testusername",
-		//				Password: "$2a$10$qOTw9.MDmIfi60PZThHCMec5g4XWI0CskDKR4bbsIOAEhBs3cQvmG",
-		//			}, nil)
-		//	},
-		//},
+		{
+			name: "success",
+			args: args{
+				request: memberships.LoginRequest{
+					Email:    "test@gmail.com",
+					Password: "password",
+				},
+			},
+			wantErr: false,
+			mockFn: func(args args) {
+				mockRepo.EXPECT().GetUser(args.request.Email, "", uint(0)).
+					Return(&memberships.User{
+						Model: gorm.Model{
+							ID: 1,
+						},
+						Email:    "test@gmail.com",
+						Username: "testusername",
+						Password: "$2a$10$qOTw9.MDmIfi60PZThHCMec5g4XWI0CskDKR4bbsIOAEhBs3cQvmG",
+					}, nil)
+			},
+		},
 		{
 			name: "error when login",
 			args: args{
